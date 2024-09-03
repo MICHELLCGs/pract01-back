@@ -13,16 +13,19 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin",
+    options.AddPolicy("AllowAll",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000")
+            builder.AllowAnyOrigin()
                    .AllowAnyMethod()
                    .AllowAnyHeader();
         });
 });
 
 var app = builder.Build();
+
+// Aplicar CORS
+app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsProduction() || app.Environment.IsDevelopment())
@@ -31,7 +34,6 @@ if (app.Environment.IsProduction() || app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowSpecificOrigin"); // Añadir esta línea para usar la política de CORS
 
 // Redirecciona las solicitudes de la raíz a Swagger UI
 app.Use(async (context, next) =>
